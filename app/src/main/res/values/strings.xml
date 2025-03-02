@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MoTrak</string>
+
+    <string-array name="sensor_types">
+        <item>Accelerometer</item>
+        <item>Gyroscope</item>
+        <item>Gravity</item>
+        <item>Rotation Vector</item>
+    </string-array>
+</resources>
