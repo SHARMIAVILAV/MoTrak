@@ -16,13 +16,15 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.animation.ValueAnimator;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class GraphView extends View {
-    private List<Float> xData = new ArrayList<>();
-    private List<Float> yData = new ArrayList<>();
-    private List<Float> zData = new ArrayList<>();
+    private final List<Float> xData = new ArrayList<>();
+    private final List<Float> yData = new ArrayList<>();
+    private final List<Float> zData = new ArrayList<>();
 
     private Paint xLinePaint;
     private Paint yLinePaint;
@@ -56,7 +58,7 @@ public class GraphView extends View {
     private boolean isDarkMode = false;
 
     // Timestamp for data points
-    private List<Long> timestamps = new ArrayList<>();
+    private final List<Long> timestamps = new ArrayList<>();
     private long startTime = 0;
 
     public GraphView(Context context) {
@@ -110,7 +112,7 @@ public class GraphView extends View {
 
         textPaint = new Paint();
         textPaint.setColor(Color.DKGRAY);
-        textPaint.setTextSize(36f);
+        textPaint.setTextSize(26f);
         textPaint.setAntiAlias(true);
 
         backgroundPaint = new Paint();
@@ -230,9 +232,9 @@ public class GraphView extends View {
         textPaint.clearShadowLayer();
 
         // Draw legend with better spacing and colored boxes
-        float legendX = width - 250;
-        float legendY = padding - 30;
-        float boxSize = 20;
+        float legendX = width - 150;
+        float legendY = padding - 40;
+        float boxSize = 10;
 
         // X-axis legend
         canvas.drawRect(legendX, legendY - boxSize + 5, legendX + boxSize, legendY + 5, xLinePaint);
@@ -271,7 +273,7 @@ public class GraphView extends View {
                 int dataIndex = Math.min(timestamps.size() - 1, Math.round(fraction * (timestamps.size() - 1)));
                 float seconds = timestamps.get(dataIndex) / 1000f;
                 textPaint.setTextAlign(Paint.Align.CENTER);
-                canvas.drawText(String.format("%.1fs", seconds), x, height - padding + 30, textPaint);
+                canvas.drawText(String.format("%.1fs", seconds), x, height - padding + 50, textPaint);
                 textPaint.setTextAlign(Paint.Align.LEFT);
             }
         }
@@ -400,7 +402,7 @@ public class GraphView extends View {
         }
 
         @Override
-        public boolean onDoubleTap(MotionEvent e) {
+        public boolean onDoubleTap(@NonNull MotionEvent e) {
             // Reset zoom on double tap
             scaleFactor = 1.0f;
             xOffset = 0f;
