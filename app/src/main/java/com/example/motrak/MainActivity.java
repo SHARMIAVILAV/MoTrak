@@ -1,6 +1,7 @@
 package com.example.motrak;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,12 +27,28 @@ public class MainActivity extends AppCompatActivity {
     private Handler timerHandler = new Handler();
     private String selectedSensorType;
 
+    private GraphView graphView;
+    private SensorDataManager sensorDataManager;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("MoTrak created!");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Inside onCreate()
+        graphView = findViewById(R.id.graph_view);
+        sensorDataManager = new SensorDataManager(this);
+
+        // Set data listener for live updates
+        sensorDataManager.setDataListener(new SensorDataManager.SensorDataListener() {
+            @Override
+            public void onSensorDataUpdated(float x, float y, float z) {
+                graphView.updateData(x, y, z); // Update graph directly
+            }
+        });
 
         // Initialize views
         sensorTypeSpinner = findViewById(R.id.sensor_type_spinner);
@@ -96,10 +114,11 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("MoTrak started Monitoring!");
         Log.d("MoTrakDebug", "Debug Message");
 
-        // Start GraphActivity
-        Intent intent = new Intent(MainActivity.this, GraphActivity.class);
-        intent.putExtra("SENSOR_TYPE", selectedSensorType);
-        startActivity(intent);
+
+        // Start Monitoring
+        sensorDataManager.startMonitoring(selectedSensorType);
+        graphView.setSensorType(selectedSensorType); // Update graph title
+
     }
 
     private void stopMonitoring() {
@@ -111,9 +130,10 @@ public class MainActivity extends AppCompatActivity {
         // Stop timer
         timerHandler.removeCallbacks(timerRunnable);
 
-        // Send broadcast to stop sensor monitoring
-        Intent stopIntent = new Intent("STOP_SENSOR_MONITORING");
-        sendBroadcast(stopIntent);
+        // Stop sensor monitoring directly
+        sensorDataManager.unregisterListeners();
+        graphView.clearData(); // Clear graph when stopping
+
     }
 
     private void startTimer() {

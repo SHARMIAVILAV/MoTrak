@@ -16,8 +16,6 @@
         android:theme="@style/Theme.MoTrak"
         tools:targetApi="31">
 
-        <activity android:name=".GraphActivity" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
