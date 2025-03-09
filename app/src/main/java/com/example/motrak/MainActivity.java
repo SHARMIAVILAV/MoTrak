@@ -224,7 +224,8 @@ public class MainActivity extends AppCompatActivity {
         // Add bullet points for better readability
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append("• Monitors device activity based on selected sensor type\n");
-        builder.append("• Maximum data points - determines the graph's visualizing limits\n\n");
+        builder.append("• Maximum data points - determines the graph's visualizing limits\n");
+        builder.append("Note: Zoom-in not supported.\n\n");
 
         descText.setText(builder);
         descText.setTextSize(14);
