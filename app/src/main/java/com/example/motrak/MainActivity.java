@@ -20,6 +20,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.text.SpannableStringBuilder;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import com.google.android.material.snackbar.Snackbar.SnackbarLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +44,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import com.google.android.material.snackbar.Snackbar;
+import android.widget.FrameLayout;
+import android.view.Gravity;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MoTrak";
@@ -197,8 +208,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAppInfo() {
-        // Show app info dialog/activity
-        Toast.makeText(this, "MoTrak - Mobile Motion Tracking App", Toast.LENGTH_SHORT).show();
+        View rootView = findViewById(android.R.id.content);
+
+        // Create a custom view for the Snackbar
+        View customView = getLayoutInflater().inflate(android.R.layout.simple_list_item_2, null);
+        TextView titleText = customView.findViewById(android.R.id.text1);
+        TextView descText = customView.findViewById(android.R.id.text2);
+
+        // Style the text views
+        titleText.setText("MoTrak - Mobile Motion Tracking App\n");
+        titleText.setTextSize(16);
+        titleText.setTypeface(null, Typeface.BOLD);
+        titleText.setTextColor(Color.parseColor("#555393"));
+
+        // Add bullet points for better readability
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append("• Monitors device activity based on selected sensor type\n");
+        builder.append("• Maximum data points - determines the graph's visualizing limits\n\n");
+
+        descText.setText(builder);
+        descText.setTextSize(14);
+        titleText.setTextColor(Color.parseColor("#555393"));
+
+        // Create and configure the Snackbar
+        Snackbar snackbar = Snackbar.make(rootView, "", Snackbar.LENGTH_INDEFINITE);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+
+        // Remove the default text view
+        TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
+        layout.removeView(textView);
+
+        // Add our custom view
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layout.addView(customView, params);
+
+        // Style the Snackbar
+        layout.setPadding(30, 20, 30, 20);
+        layout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+        // Position at the top
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) layout.getLayoutParams();
+        layoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        layoutParams.topMargin = 80;
+        layout.setLayoutParams(layoutParams);
+
+        // Add a close button
+        snackbar.setAction("DISMISS", v -> snackbar.dismiss());
+        snackbar.setActionTextColor(Color.BLACK);
+        snackbar.setBackgroundTint(Color.WHITE);
+
+        snackbar.show();
     }
 
     private void startMonitoring() {
